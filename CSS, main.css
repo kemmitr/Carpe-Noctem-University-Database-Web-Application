@@ -1,0 +1,60 @@
+#header{
+    
+    font-family: 'Alice', serif;
+    color: white;
+    font-size: 25px;
+    width: 70%; 
+    background: #0775d3; 
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    text-align: center;
+    padding-top: 15px;
+    object-position: center;
+}
+
+table {   
+	border-collapse:collapse;
+	border-bottom:1px solid gray;
+	font-family: Tahoma,Verdana,Segoe,sans-serif;
+	width:72%;
+}
+ 
+th {
+	border-bottom:1px solid gray;
+	background:none repeat scroll 0 0 #0775d3;
+	padding:10px;
+	color: #FFFFFF;
+}
+
+tr {
+	border-top:1px solid gray;
+	text-align:center;	
+}
+ 
+tr:nth-child(even) {background: #FFFFFF}
+tr:nth-child(odd) {background: #BBBBBB}	
+ 
+
+#wrapper{
+ margin-left:auto;
+    margin-right:auto;
+    width:960px;
+}
+#container {width: 100%; margin-left: 270px; object-position: center;}
+#container h3 {color: #000;}
+#container #content {margin-top: 20px;}
+
+.add-student-button {
+	border: 1px solid #666; 
+	border-radius: 5px; 
+	padding: 4px; 
+	font-size: 12px;
+	font-weight: bold;
+	width: 120px; 
+	padding: 5px 10px; 
+	
+	margin-bottom: 15px;
+	background: #cccccc;
+}
