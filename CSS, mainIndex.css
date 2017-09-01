@@ -1,0 +1,43 @@
+html{
+    background: url(blue.jpg);
+    background-repeat: no-repeat;
+    background-size: 1950px;
+    
+}
+#wrapper {
+    position: relative;
+    width: 800px;
+    margin: 0 auto; 
+ }
+html{
+    background: url(blue.jpg);
+    background-repeat: no-repeat;
+    background-size: 1950px;
+    
+}
+#wrapper {
+    position: relative;
+    width: 800px;
+    margin: 0 auto; 
+ }
+#header{
+
+    height: 100px;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: 200px;
+    padding-top: 15px;
+    font-size: 2em;
+    color: aliceblue;
+    
+}
+#inputFields{
+ 
+    margin-left: 290px;
+    color: aliceblue;
+}
+
+.linker{
+    color: aliceblue;
+    font-size: 17px;
+}
