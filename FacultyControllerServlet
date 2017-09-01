@@ -1,0 +1,202 @@
+package mainPackage;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
+
+@WebServlet("/FacultyControllerServlet")
+public class FacultyControllerServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	//create reference to our StudentDbUtil
+	private FacultyDbUtil facultyDbUtil;
+	
+	//below is a speedy way of connectiong to a database, this help is provided by our server tomcat. 
+	@Resource(name="jdbc/web_student_tracker") private DataSource data;
+	
+	
+	//when working with servlets, you use init instead of constructors, so in the init below we will initialize all of our data objects above
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		
+		try{
+			facultyDbUtil = new FacultyDbUtil(data);
+		}
+		catch (Exception exc){
+			throw new ServletException(exc);
+		}
+	
+	}
+
+
+
+
+
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try{
+			//read the command parameter from the add-student-form.jsp file
+			String theCommand = request.getParameter("command");
+			if(theCommand == null){
+				theCommand = "LIST";
+			}
+			
+			//use a switch statement to route the appropriate method, this will be the case statement to help us add or alter student data
+			//these switches such as LOAD UPDATE and the others are all coming from the jsp pages 
+			switch(theCommand){
+			case "LIST":
+				listFaculty(request,response);
+				break;
+			case "ADD":
+				addFaculty(request, response);
+				break;
+			case "LOAD":
+				loadFaculty(request, response);
+				break;
+			case "UPDATE":
+				updateFaculty(request, response);
+				break;
+			case "DELETE":
+				deleteFaculty(request, response);
+				break;
+			
+			default:
+				listFaculty(request, response);
+				
+			}
+			
+			
+			
+			
+			
+			
+		//call the list students method
+		listFaculty(request,response);
+		}
+		catch (Exception exc){
+			throw new ServletException(exc);
+		}
+	
+	}
+
+
+
+
+	private void deleteFaculty(HttpServletRequest request, HttpServletResponse response)throws Exception {
+		//read student data from the listStudents jsp form "studentId" in the parameter area comes from the jsp page "<c:param name="studentId""
+		String theFacultyId = request.getParameter("facultyId");
+		
+		//delete student from database
+		facultyDbUtil.deleteFaculty(theFacultyId);
+		
+		//send user back to list students page utilizing listStudents method
+		listFaculty(request, response);
+		
+	}
+
+
+
+
+
+
+	//so the method below actually pre-populated the data but this method will be the one to actually update. 
+	private void updateFaculty(HttpServletRequest request, HttpServletResponse response)throws Exception {
+		//read student data from the update-student-form.jsp form, the hidden form field on line 24
+		int id = Integer.parseInt(request.getParameter("facultyId"));
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String mail = request.getParameter("mail");
+		String address = request.getParameter("address");
+		String phoneNumber = request.getParameter("phoneNumber");
+		String jobTitle = request.getParameter("jobTitle");
+		
+		//create a new local student object
+		Faculty theFaculty = new Faculty(id, firstName, lastName, mail, address, phoneNumber, jobTitle);
+		
+		//perform update on the database utilizing studentDbUtil method .updateStudent and then use the newly created Student object theStudent for the parameter area
+		facultyDbUtil.updateFaculty(theFaculty);
+		
+		//send data back to the list students jsp page
+		listFaculty(request, response);
+	}
+
+
+
+
+
+
+	//this method will load the student data when the user wishes to update the data.
+	private void loadFaculty(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//get student id from listStudents.jsp we created a variable studentId in our listStudents.jsp file and we are using it here
+		//so we have an object to pass to db util
+		String theFacultyId = request.getParameter("facultyId");
+		
+		//we create a new Student object and set it equal to the .getStudent method in studentDbUtil this will help us communicate with the database
+		Faculty theFaculty = facultyDbUtil.getFaculty(theFacultyId);
+		
+		//place student in the request attribute the first value THE_STUDENT we just created here and will be used in a different page, update student jsp
+		//and the second value theStudent comes from above and is used to give all the data to THE_STUDENT
+		request.setAttribute("THE_FACULTY", theFaculty);
+		
+		//send to data to jsp page
+		RequestDispatcher dispatcher = request.getRequestDispatcher("update-faculty-form.jsp");
+		dispatcher.forward(request, response);
+	}
+
+
+
+
+
+
+	private void addFaculty(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//below we are grabing the data submitted by the input fields in add-student-form.jsp
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String mail = request.getParameter("mail");
+		String address = request.getParameter("address");
+		String phoneNumber = request.getParameter("phoneNumber");
+		String jobTitle = request.getParameter("jobTitle");
+		
+		//create a new student object to tranfser data to the Student Class
+		Faculty theFaculty = new Faculty(firstName,lastName,mail,address,phoneNumber,jobTitle);
+		
+		//now we take the new object we created there and send it to the StudentDbUtil class using the addStudent class.
+		facultyDbUtil.addFaculty(theFaculty);
+		
+		//send the user back to the main page using the listStudents mehtod
+		listFaculty(request, response);
+		
+	}
+
+
+
+
+
+
+	private void listFaculty(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		//create a list called students and set it to the ArrayList class we created in StudentDbUtil class
+		List<Faculty> faculty = facultyDbUtil.getFaculty();
+		
+		//add students to the request attribute on line 46. our request on line 47 will now have the value of ArrayList class we created 
+		//in StudentDbUtil class and remember the first attribute studentList is just a made up name created here that we will use in the JSp file
+		request.setAttribute("facultyList", faculty);
+		
+		//send data to the JSP page the parameter data is the name of the jsp page we need to create.
+		RequestDispatcher dispatcher = request.getRequestDispatcher("listFaculty.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+
+}
