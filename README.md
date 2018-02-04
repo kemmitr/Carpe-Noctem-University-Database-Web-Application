@@ -9,6 +9,7 @@
 <h3 style="margin-left: 22px; text-align: center; margin-bottom: -20px">Tools and Technologies</h3>
 <ul style="text-align: center; list-style: none">
     <li>Programming Language: Java/JSP</li>
-    <li>Database: MySQLimg</li>
+    <li>Markup and Styling Languages: HTML5/CSS3</li>
+    <li>Database: MySQL</li>
     <li>IDE: Eclipse</li>
 </ul>
